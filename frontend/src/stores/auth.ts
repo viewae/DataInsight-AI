@@ -16,18 +16,11 @@ interface TokenResponse {
   expires_in: number;
 }
 
-interface QuotaResponse {
-  quota_limit: number;
-  quota_used: number;
-  remaining: number;
-}
-
 const TOKEN_KEY = "datainsight_token";
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref<string | null>(localStorage.getItem(TOKEN_KEY));
   const user = ref<UserPublic | null>(null);
-  const quota = ref<QuotaResponse | null>(null);
   const loading = ref(false);
 
   const isAuthenticated = computed(() => !!token.value);
@@ -40,7 +33,6 @@ export const useAuthStore = defineStore("auth", () => {
   function _clearAuth() {
     token.value = null;
     user.value = null;
-    quota.value = null;
     localStorage.removeItem(TOKEN_KEY);
   }
 
@@ -53,7 +45,6 @@ export const useAuthStore = defineStore("auth", () => {
       });
       _saveToken(data.access_token);
       await fetchProfile();
-      await fetchQuota();
     } finally {
       loading.value = false;
     }
@@ -69,7 +60,6 @@ export const useAuthStore = defineStore("auth", () => {
       });
       _saveToken(data.access_token);
       await fetchProfile();
-      await fetchQuota();
     } finally {
       loading.value = false;
     }
@@ -85,16 +75,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  async function fetchQuota() {
-    if (!token.value) return;
-    try {
-      const { data } = await apiClient.get<QuotaResponse>("/auth/quota");
-      quota.value = data;
-    } catch {
-      // quota fetch failure is non-critical
-    }
-  }
-
   function logout() {
     _clearAuth();
   }
@@ -102,19 +82,16 @@ export const useAuthStore = defineStore("auth", () => {
   // try to restore session on init
   if (token.value) {
     fetchProfile();
-    fetchQuota();
   }
 
   return {
     token,
     user,
-    quota,
     loading,
     isAuthenticated,
     login,
     register,
     fetchProfile,
-    fetchQuota,
     logout,
   };
 });

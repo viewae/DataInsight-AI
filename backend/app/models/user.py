@@ -16,8 +16,6 @@ class User(Base, TimestampMixin):
     username: Mapped[str] = mapped_column(String(100))
     password_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[str] = mapped_column(String(20), default="user")
-    quota_limit: Mapped[int] = mapped_column(Integer, default=10)
-    quota_used: Mapped[int] = mapped_column(Integer, default=0)
 
     datasets: Mapped[list[Dataset]] = relationship(
         "Dataset", back_populates="user", cascade="all, delete-orphan"

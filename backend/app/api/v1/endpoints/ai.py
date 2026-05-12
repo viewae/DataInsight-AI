@@ -36,20 +36,11 @@ _LLM_ERROR_MAP: dict[type, tuple[int, str]] = {
 }
 
 
-def _check_quota(user: User) -> None:
-    if user.quota_used >= user.quota_limit:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="本月 AI 调用次数已达上限")
-
-
 def _llm_error(e: Exception) -> None:
     for exc_type, (code, msg) in _LLM_ERROR_MAP.items():
         if isinstance(e, exc_type):
             raise HTTPException(status_code=code, detail=f"{msg}：{e!s}") from e
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e
-
-
-def _increment_quota(user: User, db: AsyncSession) -> None:
-    user.quota_used += 1
 
 
 async def _load_data(

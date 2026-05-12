@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.session import get_db
 from app.models import User
-from app.schemas.auth import LoginRequest, QuotaResponse, RegisterRequest, TokenResponse, UserPublic
+from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserPublic
 
 router = APIRouter()
 
@@ -22,8 +22,6 @@ async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
         username=body.username.strip(),
         password_hash=hash_password(body.password),
         role="user",
-        quota_limit=10,
-        quota_used=0,
     )
     db.add(user)
     await db.commit()
@@ -54,13 +52,3 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
 @router.get("/profile", response_model=UserPublic)
 async def profile(user: User = Depends(get_current_user)):
     return UserPublic.model_validate(user)
-
-
-@router.get("/quota", response_model=QuotaResponse)
-async def quota(user: User = Depends(get_current_user)):
-    remaining = max(0, user.quota_limit - user.quota_used)
-    return QuotaResponse(
-        quota_limit=user.quota_limit,
-        quota_used=user.quota_used,
-        remaining=remaining,
-    )

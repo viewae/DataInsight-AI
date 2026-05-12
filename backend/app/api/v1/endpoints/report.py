@@ -51,12 +51,6 @@ async def generate(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    if user.quota_used >= user.quota_limit:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="本月 AI 调用次数已达上限",
-        )
-
     session = await db.get(AnalysisSession, body.session_id)
     if session is None or session.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="会话不存在")
@@ -71,7 +65,6 @@ async def generate(
 
     report = Report(user_id=user.id, title=title, content=content)
     db.add(report)
-    user.quota_used += 1
     await db.commit()
     await db.refresh(report)
     return ReportOut.model_validate(report)

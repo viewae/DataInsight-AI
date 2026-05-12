@@ -27,7 +27,3 @@ class UserPublic(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class QuotaResponse(BaseModel):
-    quota_limit: int
-    quota_used: int
-    remaining: int

@@ -52,27 +52,6 @@ const auth = useAuthStore();
           </router-link>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="8">
-        <div class="stat-card">
-          <div class="stat-icon quota" :class="{ warning: auth.quota && auth.quota.remaining <= 3 }">
-            <el-icon :size="24"><coin /></el-icon>
-          </div>
-          <div class="stat-body">
-            <span class="stat-label">AI 调用配额</span>
-            <span v-if="auth.quota" class="stat-value">
-              已用 {{ auth.quota.quota_used }} / {{ auth.quota.quota_limit }} 次
-            </span>
-            <span v-else class="stat-value">加载中…</span>
-          </div>
-          <el-progress
-            v-if="auth.quota"
-            :percentage="auth.quota.quota_limit > 0 ? Math.round((auth.quota.quota_used / auth.quota.quota_limit) * 100) : 0"
-            :stroke-width="4"
-            :show-text="false"
-            class="quota-bar"
-          />
-        </div>
-      </el-col>
     </el-row>
 
     <!-- Quick actions -->
@@ -178,15 +157,6 @@ const auth = useAuthStore();
   background: #e8ffec;
   color: #00b42a;
 }
-.stat-icon.quota {
-  background: #fff7e8;
-  color: #f90;
-}
-.stat-icon.quota.warning {
-  background: #ffe8e8;
-  color: #f53f3f;
-}
-
 .stat-body {
   flex: 1;
   display: flex;
@@ -211,25 +181,6 @@ const auth = useAuthStore();
 }
 .stat-card:hover .stat-action {
   color: #409eff;
-}
-
-.quota-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-radius: 0 0 10px 10px;
-  overflow: hidden;
-}
-.quota-bar :deep(.el-progress-bar) {
-  padding: 0;
-}
-.quota-bar :deep(.el-progress-bar__outer) {
-  border-radius: 0;
-  background: transparent;
-}
-.quota-bar :deep(.el-progress-bar__inner) {
-  border-radius: 0;
 }
 
 /* ── Action cards ── */
