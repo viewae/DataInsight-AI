@@ -1,0 +1,4 @@
+# Async PostgreSQL — use in Docker/Linux or Python 3.11+ with prebuilt wheels
+sqlalchemy[asyncio]>=2.0.36
+asyncpg>=0.30.0
+alembic>=1.14.0
