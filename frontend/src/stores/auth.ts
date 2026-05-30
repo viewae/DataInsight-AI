@@ -1,8 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { apiClient } from "@/api/client";
-import type { AxiosError } from "axios";
-
 interface UserPublic {
   id: number;
   email: string;

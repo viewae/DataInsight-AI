@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { init, getInstanceByDom, use } from "echarts/core";
+import { init, use } from "echarts/core";
 import { BarChart, LineChart, PieChart, ScatterChart } from "echarts/charts";
 import {
   TitleComponent,
